@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @author Fábio Ricardo
  */
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) {    //não estou usando essa classe main por enquanto, pois não sei como setar host, port... essas coisas
         Runtime rt;
         rt = Runtime.instance();
         ContainerController mainContainer;
