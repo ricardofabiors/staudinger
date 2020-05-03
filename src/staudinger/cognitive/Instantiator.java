@@ -19,12 +19,17 @@ import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jade.core.Runtime;
 
 /**
  *
  * @author Fábio Ricardo
  */
 public class Instantiator extends MRA{
+    
+    ContainerController containerController;
+    AgentController agentController;
+    Runtime runtime;
     
     @Override
     protected void setup(){
@@ -34,6 +39,13 @@ public class Instantiator extends MRA{
 
     public Instantiator() {
         this.skills = new Skill[] {instantiate};
+        runtime = Runtime.instance();
+        containerController = runtime.createAgentContainer(new ProfileImpl(false));
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Instantiator.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override
@@ -53,17 +65,11 @@ public class Instantiator extends MRA{
             String argument1 = this.getArgsValues()[2];
             Behaviour beh = new OneShotBehaviour(myMRA){
                 @Override
-                public void action() {
-                    ContainerController containerController;
-                    AgentController agentController;
-                    jade.core.Runtime runtime;
-                    runtime = jade.core.Runtime.instance();
-                    containerController = runtime.createAgentContainer(new ProfileImpl(false));
+                public void action() {    
                     try {
-                        Thread.sleep(500);
                         agentController = containerController.createNewAgent(nickname, className, new String[]{argument1});
                         agentController.start();
-                    } catch (StaleProxyException | InterruptedException ex) {
+                    } catch (StaleProxyException ex) {
                         Logger.getLogger(Instantiator.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }

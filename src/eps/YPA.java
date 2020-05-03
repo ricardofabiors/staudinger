@@ -194,6 +194,7 @@ public class YPA extends Agent {
             mraInfo = it.next();
             if (mraInfo.getAID().equals(aid)) {
                 table.remove(mraInfo);
+                System.out.println(this.getLocalName() + ": Serviço de desregistro feito com sucesso para o agente " + mraInfo.getAID());
                 return;
             }
         }

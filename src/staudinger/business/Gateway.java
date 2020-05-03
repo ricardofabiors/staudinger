@@ -51,8 +51,8 @@ public class Gateway extends Agent {
     
     @Override
     protected void setup() {
-        instantiateSuportLayerAgents();
         instantiateCognitiveLayerAgents();
+        instantiateSuportLayerAgents();
         instantiatePhysicalLayerAgents();
         newProduction(Box.GREEN, 3);    //pedido teste de um caixote verde com 3 bolinhas
     }
@@ -87,7 +87,7 @@ public class Gateway extends Agent {
                     registeredProducts++;
                 }
                 else{
-                    productName = "Product" + (String.valueOf(registeredProducts - 1) + "." + String.valueOf(my_try));     //cria um nome para instanciar o agente com um número único e ordenado de tentativa
+                    productName = "Product" + (String.valueOf(registeredProducts - 1) + "." + String.valueOf(my_try + 1));     //cria um nome para instanciar o agente com um número único e ordenado de tentativa
                     System.out.println(myAgent.getLocalName() + ": Nova tentativa para a produção requisitada");  
                 }
                 //cria e instancia um novo agente para a produção
@@ -131,18 +131,18 @@ public class Gateway extends Agent {
      * camada cognitiva utilizando o método "instanciate".
      */
     protected void instantiateSuportLayerAgents(){
-        System.out.println(this.getLocalName() + ": Instanciando agentes da camada de suporte..."); 
         YPA ypa = new YPA();
+        System.out.println(this.getLocalName() + ": Instanciando agentes da camada de suporte..."); 
         instantiate("Ypa", ypa);
     }
     
     /**
-     * Método chamado no "setup" do agente para instanciar todos os agentes da
+     * Método chamado no "setup" do agente para instanciar todos os agentes padrão da
      * camada cognitiva utilizando o método "instanciate".
      */
     protected void instantiateCognitiveLayerAgents(){
-        System.out.println(this.getLocalName() + ": Instanciando agentes da camada cognitiva...");
         Instantiator instantiator = new Instantiator();
+        System.out.println(this.getLocalName() + ": Instanciando agentes da camada cognitiva...");
         instantiate("Instantiator", instantiator);
     }
     
