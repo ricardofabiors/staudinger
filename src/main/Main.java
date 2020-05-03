@@ -23,7 +23,6 @@ public class Main {
         Runtime rt;
         rt = Runtime.instance();
         ContainerController mainContainer;
-        
         mainContainer = rt.createMainContainer(new ProfileImpl(true));
         AgentController myAgentController;
         

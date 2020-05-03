@@ -56,7 +56,7 @@ public class HardwareAcess {
             System.out.println(thisAgent.getLocalName() + ": A cor do caixote NÃO coincide com a desejada"); 
             result = "false";
             count++;
-            if(count == 3) readColor = Box.GREEN;
+            if(count == 2) readColor = Box.GREEN;
         }
         return result;
     }

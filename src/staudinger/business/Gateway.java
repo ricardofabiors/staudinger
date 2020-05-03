@@ -68,7 +68,7 @@ public class Gateway extends Agent {
     }
     
     /**
-     * Método servo usado numa nova produção. É chamado no método "newProduction"
+     * Método servo (provisório) usado numa nova produção. É chamado no método "newProduction"
      * com o parâmetro "my_try" igual a 0, indicando o ínicio de uma nova 
      * produção. O método também é chamado recursivamente, tentando concluir a 
      * produção que provavelmente foi impedida pela cor do caixote retirado.
@@ -83,12 +83,12 @@ public class Gateway extends Agent {
                 String productName;
                 if(my_try == 0){
                     productName = "Product" + (String.valueOf(registeredProducts));     //cria um nome para instanciar o agente com um número único
-                    System.out.println(myAgent.getLocalName() + ": Serviço de nova produção requisitado"); 
+                    System.out.println(myAgent.getLocalName() + ": Serviço de nova produção requisitado: " + productName); 
                     registeredProducts++;
                 }
                 else{
                     productName = "Product" + (String.valueOf(registeredProducts - 1) + "." + String.valueOf(my_try + 1));     //cria um nome para instanciar o agente com um número único e ordenado de tentativa
-                    System.out.println(myAgent.getLocalName() + ": Nova tentativa para a produção requisitada");  
+                    System.out.println(myAgent.getLocalName() + ": Nova tentativa para a produção " +"Product" + (String.valueOf(registeredProducts - 1)) + " requisitada");  
                 }
                 //cria e instancia um novo agente para a produção
                 NewOrder production;
@@ -105,19 +105,19 @@ public class Gateway extends Agent {
                 
                 //analisa a mensagem de feedback
                 if (msg == null) {
-                    System.out.println(myAgent.getLocalName() + ": Serviço de nova produção demorou muito para responder");   
+                    System.out.println(myAgent.getLocalName() + ": Serviço de produção para " + productName + "demorou muito para responder");   
                 } 
                 else {
                     if (msg.getPerformative() == ACLMessage.FAILURE) {
-                        System.out.println(myAgent.getLocalName() + ": Serviço de nova produção falhou"); 
+                        System.out.println(myAgent.getLocalName() + ": Serviço de produção para " + productName + " falhou"); 
                     } 
                     else {
                         if("Insert".equals(msg.getContent())){
-                            System.out.println(myAgent.getLocalName() + ": Serviço de nova produção foi adiado, tentando novamente...");
+                            System.out.println(myAgent.getLocalName() + ": Serviço de produção para " + productName + " foi adiado, tentando novamente...");
                             serveNewProduction(color, quantity, (my_try + 1));
                         }
                         else if("Production".equals(msg.getContent())){
-                            System.out.println(myAgent.getLocalName() + ": Serviço de nova produção foi feito com sucesso!");
+                            System.out.println(myAgent.getLocalName() + ": Serviço de produção feito com sucesso para " + productName);
                             //aliveProducts--;
                         }
                     }
