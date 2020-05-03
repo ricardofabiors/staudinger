@@ -14,7 +14,7 @@ import jade.core.behaviours.FSMBehaviour;
  *
  * @author Fábio Ricardo
  */
-public class DecisionItem implements Item{
+public class DecisionItem implements Item {
     private PlanItem decision, choice0, choice1;
     private MRA requester;
 
@@ -29,7 +29,7 @@ public class DecisionItem implements Item{
     public Behaviour execute(){
         FSMBehaviour myFSM = new FSMBehaviour(requester);
         
-        //registra os nós/estados que fazem parte da árvore/FSM
+        //registra os nós que fazem parte da FSM
         myFSM.registerFirstState(this.decision.execute(), "decision");
         myFSM.registerLastState(this.choice0.execute(), "choice0");
         myFSM.registerLastState(this.choice1.execute(), "choice1");

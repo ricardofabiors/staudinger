@@ -23,7 +23,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Classe que modela o agente Gateway da arquitetura EPSCore, que, por sua vez,
+ * é reponsável por encabeçar o MAS como um todo e conectá-lo a outros sistemas.
+ * Ao criar um agente dessa classe, o mesmo instancia os agentes que constituem
+ * a arquitetura e provém métodos finais para a solicitação de um novo produto.
+ * 
  * @author Fábio Ricardo
  */
 public class Gateway extends Agent {
@@ -32,7 +36,7 @@ public class Gateway extends Agent {
     private AgentController agentController;
     private Runtime runtime;
     
-    private int registeredProducts;
+    private int registeredProducts;    //número de produtos requisitados até o momento
     
     public Gateway() {
         registeredProducts = 1;
@@ -50,39 +54,56 @@ public class Gateway extends Agent {
         instantiateSuportLayerAgents();
         instantiateCognitiveLayerAgents();
         instantiatePhysicalLayerAgents();
-        newProduction(Box.GREEN, 3);    //pedido de um caixote verde com 3 bolinhas
+        newProduction(Box.GREEN, 3);    //pedido teste de um caixote verde com 3 bolinhas
     }
     
-    public void newProduction(int color, int quantity) {
+    /**
+     * Método que encapsula uma nova produção. É chamado sempre que o usuário 
+     * final requisitar uma nova produção pela GUI.
+     * @param color Cor do caixote desejado no pedido.
+     * @param quantity Quantidade de bolinhas desejadas no pedido.
+     */
+    protected void newProduction(int color, int quantity) {
         serveNewProduction(color, quantity, 0);
     }
     
-    public void serveNewProduction(int color, int quantity, int my_try) {
+    /**
+     * Método servo usado numa nova produção. É chamado no método "newProduction"
+     * com o parâmetro "my_try" igual a 0, indicando o ínicio de uma nova 
+     * produção. O método também é chamado recursivamente, tentando concluir a 
+     * produção que provavelmente foi impedida pela cor do caixote retirado.
+     * @param color Cor do caixote desejado no pedido.
+     * @param quantity Quantidade de bolinhas desejadas no pedido.
+     * @param my_try Número da tentativa de produção de um mesmo pedido.
+     */
+    private void serveNewProduction(int color, int quantity, int my_try) {
         addBehaviour(new OneShotBehaviour(this){
             @Override
             public void action() {
                 String productName;
                 if(my_try == 0){
-                    productName = "Product" + (String.valueOf(registeredProducts));     //cria um nome para instanciar o agente com o número correto
+                    productName = "Product" + (String.valueOf(registeredProducts));     //cria um nome para instanciar o agente com um número único
                     System.out.println(myAgent.getLocalName() + ": Serviço de nova produção requisitado"); 
                     registeredProducts++;
                 }
                 else{
-                    productName = "Product" + (String.valueOf(registeredProducts - 1) + "." + String.valueOf(my_try));     //cria um nome para instanciar o agente com o número correto
+                    productName = "Product" + (String.valueOf(registeredProducts - 1) + "." + String.valueOf(my_try));     //cria um nome para instanciar o agente com um número único e ordenado de tentativa
                     System.out.println(myAgent.getLocalName() + ": Nova tentativa para a produção requisitada");  
                 }
-                
+                //cria e instancia um novo agente para a produção
                 NewOrder production;
                 production = new NewOrder(color, quantity);                     
                 instantiate(productName, production);
-
+                
+                //especifica um template para receber um feedback se a produção foi concluída
                 MessageTemplate mt = MessageTemplate.and(
                     MessageTemplate.or(
                         MessageTemplate.MatchPerformative(ACLMessage.INFORM),
                         MessageTemplate.MatchPerformative(ACLMessage.FAILURE)),
                     MessageTemplate.MatchOntology(EPSOntology.EPSONTOLOGYNAME));
-
-                ACLMessage msg = myAgent.blockingReceive(mt, 3000);
+                ACLMessage msg = myAgent.blockingReceive(mt, 5000);
+                
+                //analisa a mensagem de feedback
                 if (msg == null) {
                     System.out.println(myAgent.getLocalName() + ": Serviço de nova produção demorou muito para responder");   
                 } 
@@ -105,18 +126,30 @@ public class Gateway extends Agent {
         });   
     }
     
+    /**
+     * Método chamado no "setup" do agente para instanciar todos os agentes da
+     * camada cognitiva utilizando o método "instanciate".
+     */
     protected void instantiateSuportLayerAgents(){
         System.out.println(this.getLocalName() + ": Instanciando agentes da camada de suporte..."); 
         YPA ypa = new YPA();
         instantiate("Ypa", ypa);
     }
     
+    /**
+     * Método chamado no "setup" do agente para instanciar todos os agentes da
+     * camada cognitiva utilizando o método "instanciate".
+     */
     protected void instantiateCognitiveLayerAgents(){
         System.out.println(this.getLocalName() + ": Instanciando agentes da camada cognitiva...");
         Instantiator instantiator = new Instantiator();
         instantiate("Instantiator", instantiator);
     }
     
+    /**
+     * Método chamado no "setup" do agente para instanciar todos os agentes da 
+     * camada física utilizando o método "instanciate".
+     */
     protected void instantiatePhysicalLayerAgents() {
         System.out.println(this.getLocalName() + ": Instanciando agentes da camada física...");
         StorageConveyor storage;
@@ -160,6 +193,11 @@ public class Gateway extends Agent {
         instantiate("DestinyConveyor2", destiny2);
     }
     
+    /**
+     * Instancia um novo agente utilizando o container controller da classe.
+     * @param nickname O nome do agente a ser instanciado.
+     * @param agent O objeto agente a ser instanciado.
+     */
     protected void instantiate(String nickname, Agent agent) {
         try {
             agentController = containerController.acceptNewAgent(nickname, agent);
