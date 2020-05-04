@@ -13,12 +13,24 @@ import eps.SkillExecuteException;
 import eps.Util;
 
 /**
- *
+ * Classe que representa a parte principal do módulo Conveyor Belt with 
+ * Machine Tool, isto é, a parte que atua tampando os caixotes.
+ * 
  * @author Fábio Ricardo
  */
 public class MachineTool extends MRA{
-    
     private boolean sensor;
+    
+    /**
+     * Construtor padrão da classe. Seta a propriedade da skill "cover" e adiciona
+     * as skills ao vetor de skills.
+     * @param myPosition Indica o ponto de atuação da skill. Exemplo: "p1".
+     */
+    public MachineTool(String myPosition){
+        this.sensor = true;
+        cover.addProperty(myPosition, "yes");
+        this.skills = new Skill[] {cover, stop};
+    }
     
     @Override
     protected void setup(){
@@ -26,24 +38,10 @@ public class MachineTool extends MRA{
         addResponderBehaviour();
     }
     
-    public MachineTool(String myPosition){
-        this.sensor = true;
-        cover.addProperty(myPosition, "yes");
-        this.skills = new Skill[] {cover, stop};
-    }
-    
-    public MachineTool(){
-        this("p8");
-    }
-    
-    @Override
-    protected MRAInfo getMRAInfo() {
-        myMrainfo = new MRAInfo(); 
-        myMrainfo.setAID(this.getLocalName());
-        myMrainfo.setSkills(Util.fromSkill(getSkills()));
-        return myMrainfo;
-    }
-    
+    /**
+     * Implementa uma skill chamada "cover", que será externalizada como 
+     * serviço através do YPA e é capaz de tampar os caixotes.
+     */
     protected Skill cover = new Skill(this, "cover", "boolean", new String[]{"void"}){
         @Override
         public void execute() throws SkillExecuteException {
@@ -59,12 +57,24 @@ public class MachineTool extends MRA{
         }
     };
     
+    /**
+     * Implementa uma skill chamada "stop", que será externalizada como 
+     * serviço através do YPA e é capaz de parar a esteira do módulo. (não usada até então)
+     */
     protected Skill stop = new Skill(this, "stop", "boolean", new String[]{"void"}){
         @Override
         public void execute() throws SkillExecuteException {
             System.out.println(this.myMRA.getLocalName() + ": O módulo parou.");         
         }
     };
+    
+    @Override
+    protected MRAInfo getMRAInfo() {
+        myMrainfo = new MRAInfo(); 
+        myMrainfo.setAID(this.getLocalName());
+        myMrainfo.setSkills(Util.fromSkill(getSkills()));
+        return myMrainfo;
+    }
     
     @Override
     protected Skill[] getSkills() {

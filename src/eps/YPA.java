@@ -76,6 +76,10 @@ public class YPA extends Agent {
         addBehaviour(myAMSSubscriber);
     }
     
+    /**
+     * Cria e adiciona um comportamento cíclico que responde (handle) as 
+     * requisições feitas pelos agentes MRA (registro, desregistro e search).
+     */
     protected void addMyResponderBehaviour(){
         //cria um template para especificar as mensagens do tipo request
         MessageTemplate template = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);

@@ -15,11 +15,13 @@ import hardware.HardwareAcess;
 import staudinger.cognitive.Box;
 
 /**
- *
+ * Modela os módulos Rotate Conveyor Belt do demosntrador Staudinger e é responsável
+ * por receber, mover e verificar a cor dos caixotes.
+ * 
  * @author Fábio Ricardo
  */
 public class RotateConveyor extends MRA{
-    
+    //"direções" (ou destinos)
     public static final int UP = 1;
     public static final int DOWN = 0;
     public static final int LEFT = 2;
@@ -28,12 +30,15 @@ public class RotateConveyor extends MRA{
     protected int readColor = Box.BLACK;
     HardwareAcess acess = new HardwareAcess();
     
-    @Override
-    protected void setup(){
-        defaultSetup();
-        addResponderBehaviour();
-    }
-    
+    /**
+     * Construtor padrão da classe. Seta as propriedades da skill "move", "receive"
+     * e "checkColor", além de adicioná-las ao vetor de skills.
+     * @param to1 Indica o ponto final do recebimento realizado pela skill. 
+     * Exemplo: "p1".
+     * @param to2
+     * @param from1
+     * @param from2
+     */
     public RotateConveyor(String to1, String to2, String from1, String from2){
         move.addProperty(to1, "yes");
         move.addProperty(to2, "yes");
@@ -45,11 +50,9 @@ public class RotateConveyor extends MRA{
     }
     
     @Override
-    protected MRAInfo getMRAInfo() {
-        myMrainfo = new MRAInfo(); 
-        myMrainfo.setAID(this.getLocalName());
-        myMrainfo.setSkills(Util.fromSkill(getSkills()));
-        return myMrainfo;
+    protected void setup(){
+        defaultSetup();
+        addResponderBehaviour();
     }
     
     protected Skill move = new Skill(this, "move", "boolean", new String[]{"int"}){
@@ -105,6 +108,14 @@ public class RotateConveyor extends MRA{
             System.out.println(this.myMRA.getLocalName() + ": Minha esteira parou.");         
         }
     };
+    
+    @Override
+    protected MRAInfo getMRAInfo() {
+        myMrainfo = new MRAInfo(); 
+        myMrainfo.setAID(this.getLocalName());
+        myMrainfo.setSkills(Util.fromSkill(getSkills()));
+        return myMrainfo;
+    }
     
     @Override
     protected Skill[] getSkills() {

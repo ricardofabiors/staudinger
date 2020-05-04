@@ -22,7 +22,9 @@ import java.util.logging.Logger;
 import jade.core.Runtime;
 
 /**
- *
+ * Classe que descreve um agente Instanciador, que é um agente cognitivo
+ * responsável por instanciar outros agentes para os agentes produtos.
+ * 
  * @author Fábio Ricardo
  */
 public class Instantiator extends MRA{
@@ -36,7 +38,11 @@ public class Instantiator extends MRA{
         defaultSetup();
         addResponderBehaviour();
     }
-
+    
+    /**
+     * Construtor padrão da classe. Cria o container onde os agentes serão 
+     * inseridos e adiciona as skills ao vetor de skills.
+     */
     public Instantiator() {
         this.skills = new Skill[] {instantiate};
         runtime = Runtime.instance();
@@ -56,6 +62,10 @@ public class Instantiator extends MRA{
         return myMrainfo;
     }
     
+    /**
+     * Implementa uma skill chamada instantiate, que será externalizada como 
+     * serviço através do YPA e é capaz de instanciar outros agentes.
+     */
     public Skill instantiate = new Skill(this, "instantiate", "boolean", new String[]{"string", "string", "string"}){
         @Override
         public void execute() throws SkillExecuteException {

@@ -13,13 +13,26 @@ import eps.SkillExecuteException;
 import eps.Util;
 
 /**
- *
+ * Classe que modela os módulos Conveyor Belt do demonstrador Staudinger. É 
+ * responsável por mover os caixotes de um módulo ao outro. 
+ * 
  * @author Fábio Ricardo
  */
 public class Conveyor extends MRA{
-    
+    //"direções" (ou destinos)
     public static final int FORWARD = 1;
     public static final int BACKWARD = 0;
+    
+    /**
+     * Construtor padrão da classe. Seta a propriedade da skill "move" e adiciona
+     * as skills ao vetor de skills.
+     * @param from_to Indica o ponto inicial e final do movimento realizado 
+     * pela skill. Exemplo: "p1 to p2".
+     */
+    public Conveyor(String from_to){
+        move.addProperty(from_to, "yes");
+        this.skills = new Skill[] {move, stop};
+    }
     
     @Override
     protected void setup(){
@@ -27,23 +40,11 @@ public class Conveyor extends MRA{
         addResponderBehaviour();
     }
     
-    public Conveyor(String from_to){
-        move.addProperty(from_to, "yes");
-        this.skills = new Skill[] {move, stop};
-    }
-    
-    public Conveyor(){
-        this("p2 to p3");
-    }
-    
-    @Override
-    protected MRAInfo getMRAInfo() {
-        myMrainfo = new MRAInfo(); 
-        myMrainfo.setAID(this.getLocalName());
-        myMrainfo.setSkills(Util.fromSkill(getSkills()));
-        return myMrainfo;
-    }
-    
+    /**
+     * Implementa uma skill chamada "move", que será externalizada como 
+     * serviço através do YPA e é capaz de mover os caixotes (de certa forma,
+     * os produtos) de um módulo ao outro.
+     */
     protected Skill move = new Skill(this, "move", "boolean", new String[]{"int"}){
         @Override
         public void execute() throws SkillExecuteException {
@@ -67,12 +68,24 @@ public class Conveyor extends MRA{
         }
     };
     
+    /**
+     * Implementa uma skill chamada "stop", que será externalizada como 
+     * serviço através do YPA e é capaz de parar a esteira do módulo. (não usada até então)
+     */
     protected Skill stop = new Skill(this, "stop", "boolean", new String[]{"void"}){
         @Override
         public void execute() throws SkillExecuteException {
             System.out.println(this.myMRA.getLocalName() + ": Minha esteira parou.");         
         }
     };
+    
+    @Override
+    protected MRAInfo getMRAInfo() {
+        myMrainfo = new MRAInfo(); 
+        myMrainfo.setAID(this.getLocalName());
+        myMrainfo.setSkills(Util.fromSkill(getSkills()));
+        return myMrainfo;
+    }
     
     @Override
     protected Skill[] getSkills() {

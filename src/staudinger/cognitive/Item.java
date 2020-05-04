@@ -9,11 +9,12 @@ package staudinger.cognitive;
 import jade.core.behaviours.Behaviour;
 
 /**
- *
+ * Interface que especifica o formato de um item a ser usado no plano de execução.
+ * 
  * @author Fábio Ricardo
  */
 public interface Item {
     
-    Behaviour execute();
+    Behaviour execute();    //retorna o comportamento a ser adicionado ao agente através da execução do plano
     
 }

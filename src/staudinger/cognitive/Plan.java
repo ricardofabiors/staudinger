@@ -15,14 +15,21 @@ import jade.core.behaviours.SequentialBehaviour;
 import java.util.ArrayList;
 
 /**
- *
+ * Classe que define um plano de execução dentro da aplicação. Tais planos são
+ * usados nos agentes do tipo produto, os quais especificam os itens do plano e
+ * os executam.
+ * 
  * @author Fábio Ricardo
  */
 public class Plan {
-    private SequentialBehaviour seqBehaviour;
-    private MRA owner;
-    private ArrayList plan;
-
+    private SequentialBehaviour seqBehaviour;   //comportamento sequencial ao qual os itens (subcomportamentos) são adicionados
+    private MRA owner;                          //agente pelo qual o plano será executado
+    private ArrayList plan;                     //lista de itens que constituem um plano
+    
+    /**
+     * Construtor padrão da classe que recebe a quantidade de bolinhas.
+     * @param owner Agente pelo qual o plano será executado.
+     */
     public Plan(MRA owner) {
         this.seqBehaviour = new SequentialBehaviour();
         this.owner = owner;
@@ -30,21 +37,51 @@ public class Plan {
         this.owner.addBehaviour(this.seqBehaviour);
     }
     
+    /**
+     * Adiciona um item do tipo PlanItem ao plano, que é criado utilizando o 
+     * método "createNewPlanItem". É usado pelos agentes do tipo produto para
+     * especificar as etapas do plano.
+     * @param mrainfos Lista de "MRAInfos" dos MRAs que podem executar a skill.
+     * @param skill "SkillTemplate" que define a skill necessitada para a etapa
+     * do plano.
+     */
     public void addNewPlanItem(MRAInfo[] mrainfos, SkillTemplate skill){
         Item newItem = createNewPlanItem(mrainfos, skill);
         plan.add(newItem);
     }
     
+    /**
+     * Cria um novo item de plano (PlanItem). É encapsulado em "addNewPlanItem"
+     * mas também é usado para criar itens de escolha para itens de decisão.
+     * @param mrainfos Lista de "MRAInfos" dos MRAs que podem executar a skill.
+     * @param skill "SkillTemplate" que define a skill necessitada para a etapa
+     * do plano.
+     * @return O item de plano (PlanItem) recém criado.
+     */
     public PlanItem createNewPlanItem(MRAInfo[] mrainfos, SkillTemplate skill){
         PlanItem newItem = new PlanItem(mrainfos, skill, owner);
         return newItem;
     }
     
-    public void addNewDecisionItem(PlanItem decision, PlanItem choice1, PlanItem choice2){
-        Item newItem = new DecisionItem(decision, choice1, choice2);
+    /**
+     * Cria e adiciona um novo item de decisão ao plano. É usado pelos agentes 
+     * do tipo produto.
+     * @param decision PlanItem cujo o resultado do comportamento decidirá o 
+     * próximo item a ser executado.
+     * @param choice0 PlanItem que representa a primeira escolha.
+     * @param choice1 PlanItem que representa a segunda escolha.
+     */
+    public void addNewDecisionItem(PlanItem decision, PlanItem choice0, PlanItem choice1){
+        Item newItem = new DecisionItem(decision, choice0, choice1);
         plan.add(newItem);
     }
     
+    /**
+     * Adiciona os comportamentos (utilizando o método "execute") de cada item
+     * ao comportamento sequencial do plano, que por sua é adicionado ao agente
+     * através do construtor. Por último, adiciona-se um comportamento para 
+     * deletar o agente.
+     */
     public void execute(){
         for(int i = 0; i < plan.size(); i++){
             Behaviour executionBehaviour = ((Item) plan.get(i)).execute();

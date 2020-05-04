@@ -15,7 +15,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Os serviços finais do sistema Staudinger geralmente dependem da cor do caixote.
+ * Por isso, ao solicitar um pedido qualquer (no momento, somente a produção está
+ * disponível) que necessite pegar um caixote da pilha e verificar sua cor, um 
+ * agente de "pedido genérico" pegará o caixote e verificará sua cor. Atualmente, 
+ * o agente "Gateway" intancia esse agente somente para produção. Esta classe 
+ * descreve tal agente.
+ * 
  * @author Fábio Ricardo
  */
 public class NewOrder extends Product{
@@ -24,10 +30,15 @@ public class NewOrder extends Product{
     public static final int LEFT = 2;
     public static final int RIGHT = 3;
     
-    protected int requestedColor;
-    protected int requestedQuantity;
-    private Plan myPlan;
+    protected int requestedColor;        //cor requisitada (usado para produção)
+    protected int requestedQuantity;     //quantidade de bolinhas requisitada (usado para inserção)
+    private Plan myPlan;                 //plano de execução do agente
     
+    /**
+     * Construtor padrão da classe que recebe a cor e a quantidade de bolinhas.
+     * @param color Cor requisitada do caixote.
+     * @param quantity Quantidade de bolinhas requisitada.
+     */
     public NewOrder(int color, int quantity) {
         this.requestedColor = color;
         this.requestedQuantity = quantity;
@@ -40,6 +51,10 @@ public class NewOrder extends Product{
         produce();
     }
     
+    /**
+     * Implementação do método "Produce". Cria-se o plano chamando o método 
+     * "createPlan" e, em seguida, o mesmo é executado ("executePlan").
+     */
     @Override
     protected void produce(){
         try {
@@ -50,6 +65,17 @@ public class NewOrder extends Product{
         executePlan();
     }
     
+    /**
+     * Cria um plano de execução adicionando "PlanItem"s ao atributo "myPlan".
+     * Atualmente, o agente "novo pedido" (ou "pedido genérico") conhece as 
+     * skills necessárias para realizar sua função. Portanto, tais skills são 
+     * definidas nos "SkillTemplate"s e em seguida são passadas como parâmetros
+     * para uma busca dos MRAs capazes de executá-las. Posteriormente, essas 
+     * listas de MRAs são passadas junto com os "SkillTemplate"s num método que
+     * cria/adiciona um novo item ao plano de execução. O último item é um item 
+     * de decisão, que permite que o agente possa solicitar uma instanciação (ao
+     * "Instantiator") de um agente do tipo produção ou inserção.
+     */
     private void createPlan() throws YPAException{
         //pega um novo caixote
         SkillTemplate st = new SkillTemplate("getNewBox", "boolean", new String[]{"void"});
@@ -88,6 +114,10 @@ public class NewOrder extends Product{
         myPlan.addNewDecisionItem(decision, choice0, choice1);    //adiciona novo item de decisão no plano de execução
     }
     
+    /**
+     * Executa o plano de execução "myPlan", que é atributo da classe. É chamado
+     * no método produce.
+     */
     private void executePlan(){
         myPlan.execute();
     }

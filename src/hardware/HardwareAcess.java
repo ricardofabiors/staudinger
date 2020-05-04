@@ -10,7 +10,10 @@ import jade.core.Agent;
 import staudinger.cognitive.Box;
 
 /**
- *
+ * Classe que provém/proverá métodos de acesso ao Hardware do staudinger
+ * através de chamadas i/o pela rede. Os métodos atuais são provisórios e de uso
+ * somente demonstrativo.
+ * 
  * @author Fábio Ricardo
  */
 public class HardwareAcess {
@@ -27,6 +30,16 @@ public class HardwareAcess {
         readColor = Box.BLACK;
     }
     
+    /**
+     * Move a esteira do módulo pra baixo ou pra direita. É usado pela classe 
+     * "RotateConveyor" para dropar o caixote no próximo módulo escolhido para 
+     * a produção.
+     * @param thisAgent Agente "RotateConveyor" a usar o método.
+     * @param direction "Direção" (na verdade, é o destino) para onde a esteira 
+     * rotativa levará o caixote.
+     * @return Uma "string" representando uma variável "boolean", que indica se
+     * o movimento foi feito.
+     */
     public String move(Agent thisAgent, int direction){
         String result;
         switch (direction) {
@@ -46,6 +59,14 @@ public class HardwareAcess {
         return result;
     }
     
+    /**
+     * Compara a cor do caixote lida pelo sensor (representada pela variável
+     * "readColor") e compara com o a cor passada como parâmetro.
+     * @param thisAgent Agente "RotateConveyor" a usar o método.
+     * @param desiredColor Cor desejada para comparação.
+     * @return Uma "string" representando uma variável "boolean", que indica se
+     * a cor passada como parâmetro coincide com a lida pelo sensor.
+     */
     public String checkColor(Agent thisAgent, int desiredColor){
         String result;
         if(desiredColor == readColor){

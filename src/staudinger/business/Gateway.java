@@ -38,6 +38,11 @@ public class Gateway extends Agent {
     
     private int registeredProducts;    //número de produtos requisitados até o momento
     
+    /**
+     * Construtor padrão da classe. Cria o container onde os agentes serão 
+     * inseridos e seta a variável registeredProducts para 1, de modo que a 
+     * primeira produção seja identificada como "Product1".
+     */
     public Gateway() {
         registeredProducts = 1;
         try {
@@ -59,7 +64,7 @@ public class Gateway extends Agent {
     
     /**
      * Método que encapsula uma nova produção. É chamado sempre que o usuário 
-     * final requisitar uma nova produção pela GUI.
+     * final requisitar uma nova produção pela GUI (não desenvolvida ainda).
      * @param color Cor do caixote desejado no pedido.
      * @param quantity Quantidade de bolinhas desejadas no pedido.
      */
@@ -68,10 +73,11 @@ public class Gateway extends Agent {
     }
     
     /**
-     * Método servo (provisório) usado numa nova produção. É chamado no método "newProduction"
-     * com o parâmetro "my_try" igual a 0, indicando o ínicio de uma nova 
-     * produção. O método também é chamado recursivamente, tentando concluir a 
-     * produção que provavelmente foi impedida pela cor do caixote retirado.
+     * Método servo (provisório) usado numa nova produção. É chamado no método 
+     * "newProduction" com o parâmetro "my_try" igual a 0, indicando o ínicio 
+     * de uma nova produção. O método também é chamado recursivamente, tentando 
+     * concluir a produção que provavelmente foi impedida pela cor do caixote
+     * retirado.
      * @param color Cor do caixote desejado no pedido.
      * @param quantity Quantidade de bolinhas desejadas no pedido.
      * @param my_try Número da tentativa de produção de um mesmo pedido.

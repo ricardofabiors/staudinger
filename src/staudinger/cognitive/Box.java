@@ -7,7 +7,11 @@
 package staudinger.cognitive;
 
 /**
- *
+ * Classe que representa um caixote com todas suas caracterísiticas. No momento,
+ * é usada somente para prover os valores inteiros para as cores dos caixotes. 
+ * Seu uso, entretanto, será bem maior em versões futuras, nas quais o aramazém 
+ * é levado em conta.
+ * 
  * @author Fábio Ricardo
  */
 public class Box {
@@ -16,10 +20,10 @@ public class Box {
     public static final int BLACK = 1;
     public static final int UNKNOWN = 5;
     
-    private int color;
-    protected int resources;
-    private String rfid_code;
-    private boolean isOpen;
+    private int color;          //cor do caixote
+    protected int resources;    //quantidade de bolinhas
+    private String rfid_code;   //código rfid
+    private boolean isOpen;     //se está tampado
 
     public Box(int color, String rfid_code){
         this.color = color;

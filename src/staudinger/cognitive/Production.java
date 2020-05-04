@@ -19,32 +19,57 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Esta classe descreve uma produção dentro do sistema. Os agentes objetos dela 
+ * representam uma produção de fato e são responsáveis por levar tais caixotes 
+ * à "DestinyConveyor" adequada, passando pelo inseridor de bolinhas e pelo
+ * inseridor de tampa. Na descrição atual do sistema, esse destino pode ser 
+ * visto como um só, o que permite que tais agentes, em seus planos de execução,
+ * saibam as skills que deverão ser solicitadas, assim como a ordem de execução
+ * das mesmas. 
+ * 
  * @author Fábio Ricardo
  */
 public class Production extends Product{
+    //"direções" ou destinos
     public static final int UP = 1;
     public static final int DOWN = 0;
     public static final int LEFT = 2;
     public static final int RIGHT = 3;
-    
     public static final int R1 = 0;
     public static final int R2 = 1;
     public static final int THE_END = 2;   
     
-    protected int requestedQuantity;
-    protected Box myBox;
-    private Plan myPlan;
+    protected int requestedQuantity;    //quantidade de bolinhas requisitada 
+    protected Box myBox;                //caixote atual atrelado ao agente (atributo não utilizado até então)
+    private Plan myPlan;                //plano de execução do agente
     
+    /**
+     * Construtor da classe que recebe a quantidade de bolinhas.
+     * @param quantity Quantidade de bolinhas requisitada.
+     */
     public Production(int quantity) {
         this.requestedQuantity = quantity;
         this.myPlan = new Plan(this);
     }
     
+    /**
+     * Construtor padrão da classe. É passado "UNKNOWN" para a quantidade que será 
+     * atribuída somente no método "setup" do agente, uma vez que esse será 
+     * instanciado pelo agente "Instantiator" como resultado de uma skill.
+     */ 
     public Production() {
         this(Box.UNKNOWN);
     }
-        
+    
+    /**
+     * Implementação do método "setup" do agente. Aqui é verificado através do 
+     * "if" se a instanciação do agente foi feita pelo "Instantiator" ou "Gateway". 
+     * Essas instanciações são diferentes porque o "Gateway" adiciona ao container
+     * (método "acceptNewAgent") um agente cuja a classe foi inicializada através 
+     * do construtor que recebe a quantidade, enquanto o "Instantiator" cria de fato o
+     * agente através de um AgentController, e, portanto, recebe a quantidade de 
+     * bolinhas pelos argumentos passados na função "createNewAgent".
+     */    
     @Override
     protected void setup() {
         //permite que a quantidade de bolinhas do caixote seja passada pelo argumento do agente
@@ -58,6 +83,10 @@ public class Production extends Product{
         produce();
     }
     
+    /**
+     * Implementação do método "Produce". Cria-se o plano chamando o método 
+     * "createPlan" e, em seguida, o mesmo é executado ("executePlan").
+     */
     @Override
     protected void produce(){
         try {
@@ -68,6 +97,15 @@ public class Production extends Product{
         executePlan();
     }
     
+    /**
+     * Cria um plano de execução adicionando "PlanItem"s ao atributo "myPlan".
+     * Atualmente, o agente produção conhece as skills necessárias para chegar
+     * aos destinos adequados. Portanto, tais skills são definidas nos "SkillTemplate"s
+     * e em seguida são passadas como parâmetros para uma busca dos MRAs capazes
+     * de executá-las. Posteriormente, essas listas de MRAs são passadas junto com 
+     * os "SkillTemplate"s num método que cria/adiciona um novo item ao plano
+     * de execução.
+     */
     private void createPlan() throws YPAException{
         //rotate conveyor 1 move o caixote para a conveyor 1
         SkillTemplate st = new SkillTemplate("move", "boolean", new String[]{"int"});
@@ -154,6 +192,10 @@ public class Production extends Product{
         myPlan.addNewPlanItem(mrainfos9, st9);    //adiciona novo item no plano de execução        
     }
     
+    /**
+     * Executa o plano de execução "myPlan", que é atributo da classe. É chamado
+     * no método produce.
+     */
     private void executePlan(){
         myPlan.execute();
     }
@@ -166,6 +208,10 @@ public class Production extends Product{
         return myMrainfo;
     }
     
+    /**
+     * Sobrescreve o método "takeDown" de "Agent" especificando que o agente 
+     * "Production" avisará ao "Gateway" que houve uma produção.
+     */
     @Override
     protected void takeDown() {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
