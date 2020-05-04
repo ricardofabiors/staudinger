@@ -61,7 +61,7 @@ public class HardwareAcess {
     
     /**
      * Compara a cor do caixote lida pelo sensor (representada pela variável
-     * "readColor") e compara com o a cor passada como parâmetro.
+     * "readColor") com o a cor passada como parâmetro.
      * @param thisAgent Agente "RotateConveyor" a usar o método.
      * @param desiredColor Cor desejada para comparação.
      * @return Uma "string" representando uma variável "boolean", que indica se

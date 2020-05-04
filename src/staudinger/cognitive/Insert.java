@@ -109,8 +109,8 @@ public class Insert extends Product{
     private void createPlan() throws YPAException{
         //rotate conveyor 1 move o caixote para a conveyor 2
         SkillTemplate st = new SkillTemplate("move", "boolean", new String[]{"int"});
-        st.addProperty("p1 to p2", "yes");
-        st.addProperty("p1 to p11", "yes");
+        st.addProperty("to p2", "yes");
+        st.addProperty("to p11", "yes");
         st.setArgsValues(new String[]{"3"});
         MRAInfo[] mrainfos = YPAServices.search(this, st);    //solicita serviço de busca para o YPA
         myPlan.addNewPlanItem(mrainfos, st);    //adiciona novo item no plano de execução

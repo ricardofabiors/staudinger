@@ -13,12 +13,27 @@ import eps.SkillExecuteException;
 import eps.Util;
 
 /**
- *
+ * Classe que modela o módulo Register Storage with Conveyor Belt do demonstrador
+ * Staudinger. Esse módulo é responsável por pegar um novo caixote da pilha de 
+ * caixotes.
+ * 
  * @author Fábio Ricardo
  */
 public class StorageConveyor extends MRA{
     
     private boolean sensorIn;
+    
+    /**
+     * Construtor padrão da classe. Seta a propriedade da skill "getNewBox" e 
+     * adiciona as skills ao vetor de skills.
+     * @param from_to Indica o ponto inicial e final do movimento realizado 
+     * pela skill "getNewBox" da pilha. Exemplo: "p1 to p2".
+     */
+    public StorageConveyor(String from_to){
+        this.sensorIn = true;
+        getNewBox.addProperty(from_to, "yes");
+        this.skills = new Skill[] {getNewBox, stop};
+    }
     
     @Override
     protected void setup(){
@@ -26,24 +41,11 @@ public class StorageConveyor extends MRA{
         addResponderBehaviour();
     }
     
-    public StorageConveyor(String from_to){
-        this.sensorIn = true;
-        getNewBox.addProperty(from_to, "yes");
-        this.skills = new Skill[] {getNewBox, stop};
-    }
-    
-    public StorageConveyor(){
-        this("p0 to p1");
-    }
-    
-    @Override
-    protected MRAInfo getMRAInfo() {
-        myMrainfo = new MRAInfo(); 
-        myMrainfo.setAID(this.getLocalName());
-        myMrainfo.setSkills(Util.fromSkill(getSkills()));
-        return myMrainfo;
-    }
-    
+    /**
+     * Implementa uma skill chamada "getNewBox", que será externalizada como 
+     * serviço através do YPA e é capaz de pegar um novo caixote da pilha e movê-lo
+     * para o próximo módulo
+     */
     protected Skill getNewBox = new Skill(this, "getNewBox", "boolean", new String[]{"void"}){   
         @Override
         public void execute() throws SkillExecuteException {
@@ -59,6 +61,10 @@ public class StorageConveyor extends MRA{
         }
     };
     
+    /**
+     * Implementa uma skill chamada "stop", que será externalizada como 
+     * serviço através do YPA e é capaz de parar a esteira do módulo. (não usada até então)
+     */
     protected Skill stop = new Skill(this, "stop", "boolean", new String[]{"void"}){
         @Override
         public void execute() throws SkillExecuteException {
@@ -69,6 +75,14 @@ public class StorageConveyor extends MRA{
     @Override
     protected Skill[] getSkills() {
         return this.skills;
+    }
+    
+    @Override
+    protected MRAInfo getMRAInfo() {
+        myMrainfo = new MRAInfo(); 
+        myMrainfo.setAID(this.getLocalName());
+        myMrainfo.setSkills(Util.fromSkill(getSkills()));
+        return myMrainfo;
     }
     
     private boolean isThereBox(){

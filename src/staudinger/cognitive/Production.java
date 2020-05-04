@@ -109,8 +109,8 @@ public class Production extends Product{
     private void createPlan() throws YPAException{
         //rotate conveyor 1 move o caixote para a conveyor 1
         SkillTemplate st = new SkillTemplate("move", "boolean", new String[]{"int"});
-        st.addProperty("p1 to p2", "yes");
-        st.addProperty("p1 to p11", "yes");
+        st.addProperty("to p2", "yes");
+        st.addProperty("to p11", "yes");
         st.setArgsValues(new String[]{"0"});
         MRAInfo[] mrainfos = YPAServices.search(this, st);    //solicita serviço de busca para o YPA
         myPlan.addNewPlanItem(mrainfos, st);    //adiciona novo item no plano de execução
@@ -123,7 +123,7 @@ public class Production extends Product{
         myPlan.addNewPlanItem(mrainfos1, st1);    //adiciona novo item no plano de execução
         
         //rotate conveyor 2 recebe o caixote 
-        SkillTemplate st2 = new SkillTemplate("receive", "string", new String[]{"int"});
+        SkillTemplate st2 = new SkillTemplate("receive", "boolean", new String[]{"int"});
         st2.addProperty("from p3", "yes");
         st2.addProperty("from p6", "yes");
         st2.setArgsValues(new String[]{"1"});
@@ -132,8 +132,8 @@ public class Production extends Product{
         
         //rotate conveyor 2 move o caixote para a resource conveyor
         SkillTemplate st3 = new SkillTemplate("move", "boolean", new String[]{"int"});
-        st3.addProperty("p3 to p4", "yes");
-        st3.addProperty("p3 to p6", "yes");
+        st3.addProperty("to p4", "yes");
+        st3.addProperty("to p6", "yes");
         st3.setArgsValues(new String[]{"3"});
         MRAInfo[] mrainfos3 = YPAServices.search(this, st3);    //solicita serviço de busca para o YPA
         myPlan.addNewPlanItem(mrainfos3, st3);    //adiciona novo item no plano de execução

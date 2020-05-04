@@ -33,11 +33,14 @@ public class RotateConveyor extends MRA{
     /**
      * Construtor padrão da classe. Seta as propriedades da skill "move", "receive"
      * e "checkColor", além de adicioná-las ao vetor de skills.
-     * @param to1 Indica o ponto final do recebimento realizado pela skill. 
-     * Exemplo: "p1".
-     * @param to2
-     * @param from1
-     * @param from2
+     * @param to1 Indica o primeiro possível ponto final do movimento realizado 
+     * pela skill "move" (para baixo). Exemplo: "to p1".
+     * @param to2 Indica o segundo possível ponto final do movimento realizado 
+     * pela skill "move" (para direita). Exemplo: "to p1".
+     * @param from1 Indica o primeiro possível ponto inicial do recebimento realizado 
+     * pela skill "receive" (de cima). Exemplo: "from p1".
+     * @param from2 Indica o segundo possível ponto inicial do recebimento realizado 
+     * pela skill "receive" (da direita). Exemplo: "from p1".
      */
     public RotateConveyor(String to1, String to2, String from1, String from2){
         move.addProperty(to1, "yes");
@@ -55,6 +58,11 @@ public class RotateConveyor extends MRA{
         addResponderBehaviour();
     }
     
+    /**
+     * Implementa uma skill chamada "move", que será externalizada como 
+     * serviço através do YPA e é capaz de mover os caixotes da rotate conveyor
+     * para o próximo módulo.
+     */
     protected Skill move = new Skill(this, "move", "boolean", new String[]{"int"}){
         @Override
         public void execute() throws SkillExecuteException {
@@ -67,6 +75,11 @@ public class RotateConveyor extends MRA{
         }
     };
     
+    /**
+     * Implementa uma skill chamada "receive", que será externalizada como 
+     * serviço através do YPA e é capaz de receber os caixotes de outros módulos
+     * para a rotate conveyor.
+     */
     public Skill receive = new Skill(this, "receive", "boolean", new String[]{"int"}){
         @Override
         public void execute() throws SkillExecuteException {
@@ -90,6 +103,12 @@ public class RotateConveyor extends MRA{
         }
     };
     
+    /**
+     * Implementa uma skill chamada "checkColor", que será externalizada como 
+     * serviço através do YPA e é capaz de comparar a cor do caixote lida pelo
+     * sensor (representada pela variável "readColor") com o a cor passada como 
+     * parâmetro. Retorna true se a cor coincidir.
+     */
     public Skill checkColor = new Skill(this, "checkColor", "boolean", new String[]{"int"}){
         @Override
         public void execute() throws SkillExecuteException {
@@ -102,6 +121,10 @@ public class RotateConveyor extends MRA{
         }
     };
     
+    /**
+     * Implementa uma skill chamada "stop", que será externalizada como 
+     * serviço através do YPA e é capaz de parar a esteira do módulo. (não usada até então)
+     */
     protected Skill stop = new Skill(this, "stop", "boolean", new String[]{"void"}){
         @Override
         public void execute() throws SkillExecuteException {

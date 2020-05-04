@@ -163,11 +163,11 @@ public class Gateway extends Agent {
         instantiate("StorageConveyor", storage);
         
         RotateConveyor rotate1;
-        rotate1 = new RotateConveyor("p1 to p2", "p1 to p11", "from p1", "from p11");
+        rotate1 = new RotateConveyor("to p2", "to p11", "from p1", "from p11");
         instantiate("RotateConveyor1", rotate1);
         
         RotateConveyor rotate2;
-        rotate2 = new RotateConveyor("p3 to p4", "p3 to p6", "from p3", "from p6");
+        rotate2 = new RotateConveyor("to p4", "to p6", "from p3", "from p6");
         instantiate("RotateConveyor2", rotate2);
         
         Conveyor conveyor1;
