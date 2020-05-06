@@ -28,10 +28,10 @@ public class DecisionItem implements Item {
      * @param choice1 PlanItem que provém o comportamento de escolha1
      */
     public DecisionItem(PlanItem decision, PlanItem choice0, PlanItem choice1) {
-        this.decision = decision;
-        this.choice0 = choice0;
-        this.choice1 = choice1;
-        this.requester = decision.getRequester();
+        this.setDecision(decision);
+        this.setChoice0(choice0);
+        this.setChoice1(choice1);
+        this.setRequester(decision.getRequester());
     }
     
     /**
@@ -56,5 +56,38 @@ public class DecisionItem implements Item {
         
         return myFSM; 
     }
+
+    public PlanItem getDecision() {
+        return decision;
+    }
+
+    public void setDecision(PlanItem decision) {
+        this.decision = decision;
+    }
+
+    public PlanItem getChoice0() {
+        return choice0;
+    }
+
+    public void setChoice0(PlanItem choice0) {
+        this.choice0 = choice0;
+    }
+
+    public PlanItem getChoice1() {
+        return choice1;
+    }
+
+    public void setChoice1(PlanItem choice1) {
+        this.choice1 = choice1;
+    }
+
+    public MRA getRequester() {
+        return requester;
+    }
+
+    public void setRequester(MRA requester) {
+        this.requester = requester;
+    }
+    
     
 }

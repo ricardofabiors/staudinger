@@ -15,6 +15,5 @@ import jade.core.behaviours.Behaviour;
  */
 public interface Item {
     
-    Behaviour execute();    //retorna o comportamento a ser adicionado ao agente através da execução do plano
-    
+    Behaviour execute();    //retorna o comportamento a ser adicionado ao agente através da execução do plano  
 }

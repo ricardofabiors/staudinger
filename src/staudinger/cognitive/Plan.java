@@ -32,7 +32,7 @@ public class Plan {
      */
     public Plan(MRA owner) {
         this.seqBehaviour = new SequentialBehaviour();
-        this.owner = owner;
+        this.setOwner(owner);
         this.plan = new ArrayList();
         this.owner.addBehaviour(this.seqBehaviour);
     }
@@ -78,7 +78,7 @@ public class Plan {
     
     /**
      * Adiciona os comportamentos (utilizando o método "execute") de cada item
-     * ao comportamento sequencial do plano, que por sua é adicionado ao agente
+     * ao comportamento sequencial do plano, que por sua vez é adicionado ao agente
      * através do construtor. Por último, adiciona-se um comportamento para 
      * deletar o agente.
      */
@@ -94,5 +94,9 @@ public class Plan {
                 owner.doDelete();
             }
         });
+    }
+
+    public void setOwner(MRA owner) {
+        this.owner = owner;
     }
 }

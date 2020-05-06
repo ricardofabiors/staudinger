@@ -21,7 +21,7 @@ public class Box {
     public static final int UNKNOWN = 5;
     
     private int color;          //cor do caixote
-    protected int resources;    //quantidade de bolinhas
+    private int resources;    //quantidade de bolinhas
     private String rfid_code;   //código rfid
     private boolean isOpen;     //se está tampado
 
