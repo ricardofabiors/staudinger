@@ -11,7 +11,6 @@ import eps.Product;
 import eps.SkillTemplate;
 import eps.Util;
 import eps.YPAException;
-import eps.YPAServices;
 import eps.ontology.EPSOntology;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
@@ -101,9 +100,7 @@ public class Insert extends Product{
      * Cria um plano de execução adicionando "PlanItem"s ao atributo "myPlan".
      * Atualmente, o agente inserção conhece as skills necessárias para chegar
      * ao destino adequado. Portanto, tais skills são definidas nos "SkillTemplate"s
-     * e em seguida são passadas como parâmetros para uma busca dos MRAs capazes
-     * de executá-las. Posteriormente, essas listas de MRAs são passadas junto com 
-     * os "SkillTemplate"s num método que cria/adiciona um novo item ao plano
+     * e em seguida são passadas num método que cria/adiciona um novo item ao plano
      * de execução.
      */
     private void createPlan() throws YPAException{
