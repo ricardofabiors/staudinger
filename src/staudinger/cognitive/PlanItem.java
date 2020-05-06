@@ -7,7 +7,6 @@
 package staudinger.cognitive;
 
 import eps.MRA;
-import eps.MRAInfo;
 import eps.SkillTemplate;
 import jade.core.behaviours.Behaviour;
 
@@ -18,18 +17,15 @@ import jade.core.behaviours.Behaviour;
  * @author Fábio Ricardo
  */
 public class PlanItem implements Item{
-    private MRAInfo[] executorsInfo;    //MRA que executará a skill   
     private SkillTemplate skill;        //skill a ser executada
     private MRA requester;              //agente pelo qual o item será executado
 
     /**
      * Construtor padrão da classe.
-     * @param executorsInfo Lista de "MRAInfos" dos MRAs que podem executar a skill.
      * @param skill "SkillTemplate" que define a skill necessitada.
      * @param requester Agente que precisa do serviço (skill).
      */
-    public PlanItem(MRAInfo[] executorsInfo, SkillTemplate skill, MRA requester) {
-        this.setExecutorsInfo(executorsInfo);
+    public PlanItem(SkillTemplate skill, MRA requester) {
         this.setSkill(skill);
         this.setRequester(requester);
     }
@@ -41,11 +37,7 @@ public class PlanItem implements Item{
      */
     @Override
     public Behaviour execute(){
-        return requester.newRemoteExecuteBehaviour(executorsInfo, skill);
-    }
-
-    public MRAInfo[] getExecutorsInfo() {
-        return executorsInfo;
+        return requester.newRemoteExecuteBehaviour(skill);
     }
 
     public SkillTemplate getSkill() {
@@ -54,10 +46,6 @@ public class PlanItem implements Item{
 
     public MRA getRequester() {
         return requester;
-    }
-
-    public void setExecutorsInfo(MRAInfo[] executorsInfo) {
-        this.executorsInfo = executorsInfo;
     }
 
     public void setSkill(SkillTemplate skill) {

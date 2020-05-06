@@ -7,7 +7,6 @@
 package staudinger.cognitive;
 
 import eps.MRA;
-import eps.MRAInfo;
 import eps.SkillTemplate;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.OneShotBehaviour;
@@ -41,25 +40,23 @@ public class Plan {
      * Adiciona um item do tipo PlanItem ao plano, que é criado utilizando o 
      * método "createNewPlanItem". É usado pelos agentes do tipo produto para
      * especificar as etapas do plano.
-     * @param mrainfos Lista de "MRAInfos" dos MRAs que podem executar a skill.
      * @param skill "SkillTemplate" que define a skill necessitada para a etapa
      * do plano.
      */
-    public void addNewPlanItem(MRAInfo[] mrainfos, SkillTemplate skill){
-        Item newItem = createNewPlanItem(mrainfos, skill);
+    public void addNewPlanItem(SkillTemplate skill){
+        Item newItem = createNewPlanItem(skill);
         plan.add(newItem);
     }
     
     /**
      * Cria um novo item de plano (PlanItem). É encapsulado em "addNewPlanItem"
      * mas também é usado para criar itens de escolha para itens de decisão.
-     * @param mrainfos Lista de "MRAInfos" dos MRAs que podem executar a skill.
      * @param skill "SkillTemplate" que define a skill necessitada para a etapa
      * do plano.
      * @return O item de plano (PlanItem) recém criado.
      */
-    public PlanItem createNewPlanItem(MRAInfo[] mrainfos, SkillTemplate skill){
-        PlanItem newItem = new PlanItem(mrainfos, skill, owner);
+    public PlanItem createNewPlanItem(SkillTemplate skill){
+        PlanItem newItem = new PlanItem(skill, owner);
         return newItem;
     }
     

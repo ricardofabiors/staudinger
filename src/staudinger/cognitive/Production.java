@@ -11,7 +11,6 @@ import eps.Product;
 import eps.SkillTemplate;
 import eps.Util;
 import eps.YPAException;
-import eps.YPAServices;
 import eps.ontology.EPSOntology;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
@@ -101,10 +100,8 @@ public class Production extends Product{
      * Cria um plano de execução adicionando "PlanItem"s ao atributo "myPlan".
      * Atualmente, o agente produção conhece as skills necessárias para chegar
      * aos destinos adequados. Portanto, tais skills são definidas nos "SkillTemplate"s
-     * e em seguida são passadas como parâmetros para uma busca dos MRAs capazes
-     * de executá-las. Posteriormente, essas listas de MRAs são passadas junto com 
-     * os "SkillTemplate"s num método que cria/adiciona um novo item ao plano
-     * de execução.
+     * e em seguida são passadas como parâmetros num método que cria/adiciona
+     * um novo item ao plano de execução.
      */
     private void createPlan() throws YPAException{
         //rotate conveyor 1 move o caixote para a conveyor 1
@@ -112,31 +109,27 @@ public class Production extends Product{
         st.addProperty("to p2", "yes");
         st.addProperty("to p11", "yes");
         st.setArgsValues(new String[]{"0"});
-        MRAInfo[] mrainfos = YPAServices.search(this, st);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos, st);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st);    //adiciona novo item no plano de execução
         
         //conveyor 1 move o caixote para a rotate conveyor 2
         SkillTemplate st1 = new SkillTemplate("move", "boolean", new String[]{"int"});
         st1.addProperty("p2 to p3", "yes");
         st1.setArgsValues(new String[]{"1"});
-        MRAInfo[] mrainfos1 = YPAServices.search(this, st1);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos1, st1);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st1);    //adiciona novo item no plano de execução
         
         //rotate conveyor 2 recebe o caixote 
         SkillTemplate st2 = new SkillTemplate("receive", "boolean", new String[]{"int"});
         st2.addProperty("from p3", "yes");
         st2.addProperty("from p6", "yes");
         st2.setArgsValues(new String[]{"1"});
-        MRAInfo[] mrainfos2 = YPAServices.search(this, st2);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos2, st2);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st2);    //adiciona novo item no plano de execução
         
         //rotate conveyor 2 move o caixote para a resource conveyor
         SkillTemplate st3 = new SkillTemplate("move", "boolean", new String[]{"int"});
         st3.addProperty("to p4", "yes");
         st3.addProperty("to p6", "yes");
         st3.setArgsValues(new String[]{"3"});
-        MRAInfo[] mrainfos3 = YPAServices.search(this, st3);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos3, st3);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st3);    //adiciona novo item no plano de execução
         
         //resource conveyor move o caixote para a posição do pneumatic picking
         SkillTemplate st4 = new SkillTemplate("move", "boolean", new String[]{"int"});
@@ -145,8 +138,7 @@ public class Production extends Product{
         st4.addProperty("p7 to p8", "yes");
         st4.addProperty("p8 to p9", "yes");
         st4.setArgsValues(new String[]{"0"});
-        MRAInfo[] mrainfos4 = YPAServices.search(this, st4);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos4, st4);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st4);    //adiciona novo item no plano de execução
         
         //pneumatic picking insere as bolinhas requisitadas
         MRAInfo mrainfo5 = new MRAInfo();
@@ -154,8 +146,7 @@ public class Production extends Product{
         SkillTemplate st5 = new SkillTemplate("insert", "boolean", new String[]{"int"});
         st5.addProperty("p7", "yes");
         st5.setArgsValues(new String[]{String.valueOf(requestedQuantity)});
-        MRAInfo[] mrainfos5 = YPAServices.search(this, st5);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos5, st5);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st5);    //adiciona novo item no plano de execução
         
         //resource conveyor move o caixote para a posição do machine tool
         SkillTemplate st6 = new SkillTemplate("move", "boolean", new String[]{"int"});
@@ -164,15 +155,13 @@ public class Production extends Product{
         st6.addProperty("p7 to p8", "yes");
         st6.addProperty("p8 to p9", "yes");
         st6.setArgsValues(new String[]{"1"});
-        MRAInfo[] mrainfos6 = YPAServices.search(this, st6);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos6, st6);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st6);    //adiciona novo item no plano de execução
         
         //machine tool tampa o caixote
         SkillTemplate st7 = new SkillTemplate("cover", "boolean", new String[]{"void"});
         st7.addProperty("p8", "yes");
         st7.setArgsValues(new String[]{""});
-        MRAInfo[] mrainfos7 = YPAServices.search(this, st7);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos7, st7);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st7);    //adiciona novo item no plano de execução
         
         //resource conveyor move o caixote para a posição final
         SkillTemplate st8 = new SkillTemplate("move", "boolean", new String[]{"int"});
@@ -181,15 +170,13 @@ public class Production extends Product{
         st8.addProperty("p7 to p8", "yes");
         st8.addProperty("p8 to p9", "yes");
         st8.setArgsValues(new String[]{"2"});
-        MRAInfo[] mrainfos8 = YPAServices.search(this, st8);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos8, st8);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st8);    //adiciona novo item no plano de execução
         
         //destiny conveyor 2 recebe o caixote 
         SkillTemplate st9 = new SkillTemplate("receive", "boolean", new String[]{"int"});
         st9.addProperty("p9 to p10", "yes");
         st9.setArgsValues(new String[]{"2"});
-        MRAInfo[] mrainfos9 = YPAServices.search(this, st9);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos9, st9);    //adiciona novo item no plano de execução        
+        myPlan.addNewPlanItem(st9);    //adiciona novo item no plano de execução        
     }
     
     /**

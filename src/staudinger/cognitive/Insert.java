@@ -112,22 +112,19 @@ public class Insert extends Product{
         st.addProperty("to p2", "yes");
         st.addProperty("to p11", "yes");
         st.setArgsValues(new String[]{"3"});
-        MRAInfo[] mrainfos = YPAServices.search(this, st);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos, st);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st);    //adiciona novo item no plano de execução
         
         //conveyor 2 move o caixote para a destiny conveyor 1
         SkillTemplate st1 = new SkillTemplate("move", "boolean", new String[]{"int"});
         st1.addProperty("p11 to p12", "yes");
         st1.setArgsValues(new String[]{"1"});
-        MRAInfo[] mrainfos1 = YPAServices.search(this, st1);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos1, st1);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st1);    //adiciona novo item no plano de execução
         
         //destiny conveyor 1 recebe o caixote 
         SkillTemplate st2 = new SkillTemplate("receive", "boolean", new String[]{"int"});
         st2.addProperty("p9 to p10", "yes");
         st2.setArgsValues(new String[]{"2"});
-        MRAInfo[] mrainfos2 = YPAServices.search(this, st2);    //solicita serviço de busca para o YPA
-        myPlan.addNewPlanItem(mrainfos2, st2);    //adiciona novo item no plano de execução
+        myPlan.addNewPlanItem(st2);    //adiciona novo item no plano de execução
     }
     
     /**

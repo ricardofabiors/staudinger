@@ -337,17 +337,21 @@ public abstract class MRA extends Agent {
      * (servos) da classe MRA. Assim, o programador, ao criar classes filhas de
      * MRA, pode sobrescrever tais métodos e chamar esta mesma função para realizar
      * uma execução remota agora específica para sua aplicação.
-     * @param executers Lista de "MRAInfos" dos MRAs que podem executar a skill.
      * @param skill "SkillTemplate" que define a skill a ser executada.
      * @return O comportamento ("Behaviour") que conduz a execução remota.
      */
-    public Behaviour newRemoteExecuteBehaviour(MRAInfo[] executers, SkillTemplate skill){
+    public Behaviour newRemoteExecuteBehaviour(SkillTemplate skill){
         Agent requester = this;
         Behaviour cfp_execution_beh = new ContractNetInitiator(requester, null){
             int onEnd_result;   //resultado do comportamento de execução remota a ser retornado no método "onEnd()"
             @Override
             protected Vector prepareCfps(ACLMessage cfp) {
-                Vector v = servePrepareCfps(requester, cfp, executers, skill);
+                Vector v = null;
+                try {
+                    v = servePrepareCfps(requester, cfp, skill);
+                } catch (YPAException ex) {
+                    Logger.getLogger(MRA.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 return v;
             }
             @Override
@@ -368,21 +372,24 @@ public abstract class MRA extends Agent {
     
     /**
      * Método servo que especifica como são preparados os CFPs a serem enviados
-     * para os participantes. É criado um CFP para cada "MRAInfo" da lista e 
-     * guardado num vetor para ser mandado de uma vez para os participantes.
+     * para os participantes. Solicita-se ao YPA uma busca pelos MRAs capazes de
+     * executar tal skill. Em seguida, é criado um CFP para cada "MRAInfo" da 
+     * lista e guardado num vetor para ser mandado de uma vez para os participantes.
      * Programadores podem sobrescrever este método para descrever uma forma 
      * específica para sua aplicação.
      * @param requester O agente a solicitar a execução da skill.
-     * @param cfp CFP inicialmente usado como base da iniciação da rede. Na classe,
+     * @param cfp cfp CFP inicialmente usado como base da iniciação da rede. Na classe,
      * por padrão, é um objeto "null", uma vez que o mesmo será criado somente nesta
      * função, com base na execução definida pela arquitetura EPSCore.
-     * @param mrainfos Lista de "MRAInfos" dos MRAs que podem executar a skill.
      * @param skill "SkillTemplate" que define a skill a ser executada.
      * @return Um vetor de CFPs que permite definições específicas para cada CFP
      * a ser enviado (porém, geralmente subusado aqui).
+     * @throws YPAException
      */
-    protected Vector servePrepareCfps(Agent requester, ACLMessage cfp, MRAInfo[] mrainfos, SkillTemplate skill){
+    protected Vector servePrepareCfps(Agent requester, ACLMessage cfp, SkillTemplate skill) throws YPAException{
         System.out.println(requester.getLocalName() + ": Preparando cfp");
+        System.out.println(requester.getLocalName() + ": Solicitando busca ao YPA");
+        MRAInfo[] mrainfos = YPAServices.search(this, skill); 
         Vector v = new Vector();
         for (MRAInfo mrainfo : mrainfos){
             cfp = new ACLMessage(ACLMessage.CFP);
@@ -401,6 +408,7 @@ public abstract class MRA extends Agent {
             
             v.add(cfp);
         }
+        System.out.println(requester.getLocalName() + ": Cfp preparado");
         return v;
     }
     
