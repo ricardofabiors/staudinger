@@ -159,8 +159,12 @@ public class MRAInfo implements Concept {
                 if(mySt.equalsIgnoreProperties(st)) {
                     return true;
                 }
-            } else {
+            } 
+            else {
                 if(mySt.equals(st)) {
+                    return true;
+                }
+                else if(mySt.equalsWithoutAllProperties(st)){   
                     return true;
                 }
             }

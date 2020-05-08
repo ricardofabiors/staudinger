@@ -107,7 +107,6 @@ public class Production extends Product{
         //rotate conveyor 1 move o caixote para a conveyor 1
         SkillTemplate st = new SkillTemplate("move", "boolean", new String[]{"int"});
         st.addProperty("to p2", "yes");
-        st.addProperty("to p11", "yes");
         st.setArgsValues(new String[]{"0"});
         myPlan.addNewPlanItem(st);    //adiciona novo item no plano de execução
         
@@ -120,13 +119,11 @@ public class Production extends Product{
         //rotate conveyor 2 recebe o caixote 
         SkillTemplate st2 = new SkillTemplate("receive", "boolean", new String[]{"int"});
         st2.addProperty("from p3", "yes");
-        st2.addProperty("from p6", "yes");
         st2.setArgsValues(new String[]{"1"});
         myPlan.addNewPlanItem(st2);    //adiciona novo item no plano de execução
         
         //rotate conveyor 2 move o caixote para a resource conveyor
         SkillTemplate st3 = new SkillTemplate("move", "boolean", new String[]{"int"});
-        st3.addProperty("to p4", "yes");
         st3.addProperty("to p6", "yes");
         st3.setArgsValues(new String[]{"3"});
         myPlan.addNewPlanItem(st3);    //adiciona novo item no plano de execução
@@ -134,15 +131,10 @@ public class Production extends Product{
         //resource conveyor move o caixote para a posição do pneumatic picking
         SkillTemplate st4 = new SkillTemplate("move", "boolean", new String[]{"int"});
         st4.addProperty("p6 to p7", "yes");
-        st4.addProperty("p6 to p8", "yes");
-        st4.addProperty("p7 to p8", "yes");
-        st4.addProperty("p8 to p9", "yes");
         st4.setArgsValues(new String[]{"0"});
         myPlan.addNewPlanItem(st4);    //adiciona novo item no plano de execução
         
         //pneumatic picking insere as bolinhas requisitadas
-        MRAInfo mrainfo5 = new MRAInfo();
-        mrainfo5.setAID("PneumaticPicking");
         SkillTemplate st5 = new SkillTemplate("insert", "boolean", new String[]{"int"});
         st5.addProperty("p7", "yes");
         st5.setArgsValues(new String[]{String.valueOf(requestedQuantity)});
@@ -150,10 +142,7 @@ public class Production extends Product{
         
         //resource conveyor move o caixote para a posição do machine tool
         SkillTemplate st6 = new SkillTemplate("move", "boolean", new String[]{"int"});
-        st6.addProperty("p6 to p7", "yes");
         st6.addProperty("p6 to p8", "yes");
-        st6.addProperty("p7 to p8", "yes");
-        st6.addProperty("p8 to p9", "yes");
         st6.setArgsValues(new String[]{"1"});
         myPlan.addNewPlanItem(st6);    //adiciona novo item no plano de execução
         
@@ -165,9 +154,6 @@ public class Production extends Product{
         
         //resource conveyor move o caixote para a posição final
         SkillTemplate st8 = new SkillTemplate("move", "boolean", new String[]{"int"});
-        st8.addProperty("p6 to p7", "yes");
-        st8.addProperty("p6 to p8", "yes");
-        st8.addProperty("p7 to p8", "yes");
         st8.addProperty("p8 to p9", "yes");
         st8.setArgsValues(new String[]{"2"});
         myPlan.addNewPlanItem(st8);    //adiciona novo item no plano de execução

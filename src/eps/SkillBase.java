@@ -117,6 +117,30 @@ public abstract class SkillBase implements Serializable {
         String[] vet = prop.split("=");
         return vet[1];
     }
+    
+    /**
+     * Verifica se o objeto SkillBase em questão contém, em suas propriedades,
+     * as propriedades passadas como parâmetro.
+     * @param props Propriedades a serem verificadas se estão contidas.
+     * @return True se as propriedades passadas estiverem contidas.
+     */
+    protected boolean hasTheseProps(String[] props){
+        if (props == null || props.length == 0 && !properties.isEmpty()) {
+            return false;
+        }
+        String[] sp;
+        for (String s : props) {
+            sp = s.split("=");
+            if (sp.length == 2) {
+                String unverified_key = sp[0];
+                if(!properties.containsKey(unverified_key)){    //se a "chave não verificada" NÃO está contida em properties
+                    return false;
+                }
+            }
+            else return false;
+        }
+        return true;
+    }
 
     @Override
     public int hashCode() {
@@ -167,6 +191,36 @@ public abstract class SkillBase implements Serializable {
             return false;
         }
         if (!Arrays.deepEquals(this.argsTypes, other.argsTypes)) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Verifica se o objeto passado é um SkillBase igual a este, mas sem precisar
+     * conter todas as propriedades.
+     * @param obj Objeto SkillBase a ser comparado.
+     * @return True se os objetos forem iguais sem que as propriedades sejam 
+     * exatamente as mesmas.
+     */
+    public boolean equalsWithoutAllProperties(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof SkillBase)) {
+            return false;
+        }
+        final SkillBase other = (SkillBase) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.resultType, other.resultType)) {
+            return false;
+        }
+        if (!Arrays.deepEquals(this.argsTypes, other.argsTypes)) {
+            return false;
+        }
+        if(!hasTheseProps(other.getProperties())){
             return false;
         }
         return true;

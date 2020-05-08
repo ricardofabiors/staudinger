@@ -107,7 +107,7 @@ public class Gateway extends Agent {
                         MessageTemplate.MatchPerformative(ACLMessage.INFORM),
                         MessageTemplate.MatchPerformative(ACLMessage.FAILURE)),
                     MessageTemplate.MatchOntology(EPSOntology.EPSONTOLOGYNAME));
-                ACLMessage msg = myAgent.blockingReceive(mt, 5000);
+                ACLMessage msg = myAgent.blockingReceive(mt, 10000);
                 
                 //analisa a mensagem de feedback
                 if (msg == null) {

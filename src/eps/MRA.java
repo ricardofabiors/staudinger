@@ -267,11 +267,11 @@ public abstract class MRA extends Agent {
             System.out.println(getLocalName() + ": Extraindo skill");
             for (Skill skill : skills) {
                 //verifica se a skill solicitada é válida e muda o perfomativo, se for o caso
-                if ((Util.fromSkill(skill)).equals(requestedSkill)) { 
+                if (Util.fromSkill(skill).equalsWithoutAllProperties(requestedSkill)) { 
                     if (!isBusy) {
                         reply.setPerformative(ACLMessage.PROPOSE);
                         reply.setContent(cost);
-                        System.out.println(getLocalName() + ": Skill coincidente");
+                        System.out.println(getLocalName() + ": Skill coincidente identificada");
                     }
                     else System.out.println(getLocalName() + ": Ocupado!");
                 }
@@ -279,8 +279,7 @@ public abstract class MRA extends Agent {
         } catch (UnreadableException ex) {
             Logger.getLogger(MRA.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("ContentObject inválido.");
-        }  
-        System.out.println(getLocalName() + ": Propose enviada para " + cfp.getSender().getLocalName());
+        }
         return reply;
     }
     
@@ -303,7 +302,7 @@ public abstract class MRA extends Agent {
             SkillTemplate requestedSkill = exc.getSkillTemplate();
             for (Skill sk : skills) {
                 //verifica se a skill solicitada é válida e a executa, se for o caso
-                if ((Util.fromSkill(sk)).equals(requestedSkill)) { 
+                if (Util.fromSkill(sk).equalsWithoutAllProperties(requestedSkill)) { 
                     sk.setArgsTypes(requestedSkill.getArgsTypes());
                     sk.setArgsValues(requestedSkill.getArgsValues());
                     try {

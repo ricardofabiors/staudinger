@@ -24,6 +24,7 @@ import java.util.logging.Logger;
  * @author Fábio Ricardo
  */
 public class NewOrder extends Product{
+    //"direções" ou destinos
     public static final int DOWN = 0;
     public static final int UP = 1;
     public static final int LEFT = 2;
@@ -82,14 +83,12 @@ public class NewOrder extends Product{
         //rotate conveyor recebe o caixote
         SkillTemplate st0 = new SkillTemplate("receive", "boolean", new String[]{"int"});
         st0.addProperty("from p1", "yes");
-        st0.addProperty("from p11", "yes");
         st0.setArgsValues(new String[]{"1"});
         myPlan.addNewPlanItem(st0);    //adiciona novo item no plano de execução
         
         //rotate conveyor analisa a cor do caixote
         SkillTemplate st1 = new SkillTemplate("checkColor", "boolean", new String[]{"int"});
         st1.addProperty("from p1", "yes");
-        st1.addProperty("from p11", "yes");
         st1.setArgsValues(new String[]{String.valueOf(requestedColor)});
         PlanItem decision = myPlan.createNewPlanItem(st1);    //adiciona novo item no plano de execução
         
