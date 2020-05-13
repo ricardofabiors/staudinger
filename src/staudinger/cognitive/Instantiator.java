@@ -22,8 +22,8 @@ import java.util.logging.Logger;
 import jade.core.Runtime;
 
 /**
- * Classe que descreve um agente Instanciador, que é um agente cognitivo
- * responsável por instanciar outros agentes para os agentes produtos.
+ * Classe que descreve um agente Instanciador, que é um agente MRA da camada
+ * cognitiva responsável por instanciar outros agentes para os agentes produtos.
  * 
  * @author Fábio Ricardo
  */

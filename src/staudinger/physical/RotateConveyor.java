@@ -69,7 +69,7 @@ public class RotateConveyor extends MRA{
             isBusy = true;
             int direction = Integer.parseInt(getArgsValues()[0]);
             
-            result = acess.move(myMRA, direction);
+            result = HardwareAcess.moveRotateConveyor(myMRA, direction);
             
             isBusy = false;
         }

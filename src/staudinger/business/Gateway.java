@@ -23,10 +23,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Classe que modela o agente Gateway da arquitetura EPSCore, que, por sua vez,
- * é reponsável por encabeçar o MAS como um todo e conectá-lo a outros sistemas.
- * Ao criar um agente dessa classe, o mesmo instancia os agentes que constituem
- * a arquitetura e provém métodos finais para a solicitação de um novo produto.
+ * Classe que modela o agente Gateway da arquitetura EPSCore para a aplicação, 
+ * Staudinger. Tal agente é reponsável por encabeçar o MAS como um todo e 
+ * conectá-lo a outros sistemas. Ao criar um agente dessa classe, o mesmo
+ * instancia os agentes que constituem a arquitetura e provém métodos finais 
+ * para a solicitação de um novo produto.
  * 
  * @author Fábio Ricardo
  */
@@ -73,7 +74,7 @@ public class Gateway extends Agent {
     }
     
     /**
-     * Método servo (provisório) usado numa nova produção. É chamado no método 
+     * Método servo usado numa nova produção. É chamado no método 
      * "newProduction" com o parâmetro "my_try" igual a 0, indicando o ínicio 
      * de uma nova produção. O método também é chamado recursivamente, tentando 
      * concluir a produção que provavelmente foi impedida pela cor do caixote

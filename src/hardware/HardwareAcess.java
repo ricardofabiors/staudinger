@@ -32,15 +32,15 @@ public class HardwareAcess {
     
     /**
      * Move a esteira do módulo pra baixo ou pra direita. É usado pela classe 
-     * "RotateConveyor" para dropar o caixote no próximo módulo escolhido para 
-     * a produção.
+     * "RotateConveyor" para passar o caixote para o próximo módulo escolhido na
+     * produção.
      * @param thisAgent Agente "RotateConveyor" a usar o método.
      * @param direction "Direção" (na verdade, é o destino) para onde a esteira 
      * rotativa levará o caixote.
      * @return Uma "string" representando uma variável "boolean", que indica se
      * o movimento foi feito.
      */
-    public String move(Agent thisAgent, int direction){
+    public static String moveRotateConveyor(Agent thisAgent, int direction){
         String result;
         switch (direction) {
             case DOWN:
@@ -77,7 +77,7 @@ public class HardwareAcess {
             System.out.println(thisAgent.getLocalName() + ": A cor do caixote NÃO coincide com a desejada"); 
             result = "false";
             count++;
-            if(count == 2) readColor = Box.GREEN;
+            if(count == 1) readColor = Box.GREEN;
         }
         return result;
     }
