@@ -14,11 +14,13 @@ import staudinger.cognitive.*;
 import staudinger.physical.*;
 import jade.core.ProfileImpl;
 import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.SequentialBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,6 +42,8 @@ public class Gateway extends Agent {
     private AgentController agentController;
     private Runtime runtime;
     
+    private ArrayList plan;
+    
     private int registeredProducts;    //número de produtos requisitados até o momento
     
     /**
@@ -48,6 +52,7 @@ public class Gateway extends Agent {
      * primeira produção seja identificada como "Product1".
      */
     public Gateway() {
+        plan = new ArrayList();
         registeredProducts = 1;
         try {
             runtime = jade.core.Runtime.instance();
@@ -63,7 +68,37 @@ public class Gateway extends Agent {
         instantiateCognitiveLayerAgents();
         instantiateSuportLayerAgents();
         instantiatePhysicalLayerAgents();
-        newProduction(Box.GREEN, 3);    //pedido teste de um caixote verde com 3 bolinhas
+        
+        //teste
+        addNewRequest(Box.BLACK,3);
+        executeRequests();
+        
+        addNewRequest(Box.BLACK,3);
+        addNewRequest(Box.GREEN,3);
+        executeRequests();
+    }
+    
+    protected void addNewRequest(int color, int quantity){
+        plan.add(new int[] {color, quantity});
+    }
+    
+    protected void executeRequests(){
+        SequentialBehaviour seqBeh = new SequentialBehaviour();
+        if(!plan.isEmpty()){
+            for(int i = 0; i < plan.size(); i++){
+                int color = ((int[]) plan.get(i))[0];
+                int quantity = ((int[]) plan.get(i))[1];
+                seqBeh.addSubBehaviour(new OneShotBehaviour(this){
+                    @Override
+                    public void action() {
+                        newProductionRequest(color, quantity);
+                    }
+                });
+            }
+            plan.clear();
+        addBehaviour(seqBeh);    
+        }
+        else System.out.println("Plano vazio");
     }
     
     /**
@@ -72,16 +107,16 @@ public class Gateway extends Agent {
      * @param color Cor do caixote desejado no pedido.
      * @param quantity Quantidade de bolinhas desejadas no pedido.
      */
-    protected void newProduction(int color, int quantity) {
+    protected void newProductionRequest(int color, int quantity) {
         serveNewProduction(color, quantity, 0);
     }
     
     /**
      * Método servo usado numa nova produção. É chamado no método 
-     * "newProduction" com o parâmetro "my_try" igual a 0, indicando o ínicio 
-     * de uma nova produção. O método também é chamado recursivamente, tentando 
-     * concluir a produção que provavelmente foi impedida pela cor do caixote
-     * retirado.
+ "newProductionRequest" com o parâmetro "my_try" igual a 0, indicando o ínicio 
+ de uma nova produção. O método também é chamado recursivamente, tentando 
+ concluir a produção que provavelmente foi impedida pela cor do caixote
+ retirado.
      * @param color Cor do caixote desejado no pedido.
      * @param quantity Quantidade de bolinhas desejadas no pedido.
      * @param my_try Número da tentativa de produção de um mesmo pedido.
@@ -91,6 +126,8 @@ public class Gateway extends Agent {
             @Override
             public void action() {
                 String productName;
+                
+                //cria e printa um nome único para a tentativa de produção
                 if(my_try == 0){
                     productName = "Product" + (String.valueOf(registeredProducts));     //cria um nome para instanciar o agente com um número único
                     System.out.println(CYAN + myAgent.getLocalName() + ": Serviço de nova produção requisitado: " + productName + RESET); 
@@ -98,8 +135,9 @@ public class Gateway extends Agent {
                 }
                 else{
                     productName = "Product" + (String.valueOf(registeredProducts - 1) + "_" + String.valueOf(my_try + 1));     //cria um nome para instanciar o agente com um número único e ordenado de tentativa
-                    System.out.println(CYAN + myAgent.getLocalName() + ": Nova tentativa para a produção " +"Product" + (String.valueOf(registeredProducts - 1)) + " requisitada" + RESET);  
+                    System.out.println(CYAN + myAgent.getLocalName() + ": Nova tentativa para a produção de " +"Product" + (String.valueOf(registeredProducts - 1)) + " requisitada" + RESET);  
                 }
+                
                 //cria e instancia um novo agente para a produção
                 NewOrder production;
                 production = new NewOrder(color, quantity);                     
