@@ -33,6 +33,9 @@ import java.util.logging.Logger;
  */
 public class Gateway extends Agent {
     
+    public static final String CYAN = "\u001B[36m";
+    public static final String RESET = "\u001B[0m";
+    
     private ContainerController containerController;
     private AgentController agentController;
     private Runtime runtime;
@@ -90,12 +93,12 @@ public class Gateway extends Agent {
                 String productName;
                 if(my_try == 0){
                     productName = "Product" + (String.valueOf(registeredProducts));     //cria um nome para instanciar o agente com um número único
-                    System.out.println(myAgent.getLocalName() + ": Serviço de nova produção requisitado: " + productName); 
+                    System.out.println(CYAN + myAgent.getLocalName() + ": Serviço de nova produção requisitado: " + productName + RESET); 
                     registeredProducts++;
                 }
                 else{
-                    productName = "Product" + (String.valueOf(registeredProducts - 1) + "." + String.valueOf(my_try + 1));     //cria um nome para instanciar o agente com um número único e ordenado de tentativa
-                    System.out.println(myAgent.getLocalName() + ": Nova tentativa para a produção " +"Product" + (String.valueOf(registeredProducts - 1)) + " requisitada");  
+                    productName = "Product" + (String.valueOf(registeredProducts - 1) + "_" + String.valueOf(my_try + 1));     //cria um nome para instanciar o agente com um número único e ordenado de tentativa
+                    System.out.println(CYAN + myAgent.getLocalName() + ": Nova tentativa para a produção " +"Product" + (String.valueOf(registeredProducts - 1)) + " requisitada" + RESET);  
                 }
                 //cria e instancia um novo agente para a produção
                 NewOrder production;
@@ -120,12 +123,19 @@ public class Gateway extends Agent {
                     } 
                     else {
                         if("Insert".equals(msg.getContent())){
-                            System.out.println(myAgent.getLocalName() + ": Serviço de produção para " + productName + " foi adiado, tentando novamente...");
+                            System.out.println(CYAN + myAgent.getLocalName() + ": Serviço de produção para " + productName + " foi adiado, tentando novamente..." + RESET);
                             serveNewProduction(color, quantity, (my_try + 1));
                         }
                         else if("Production".equals(msg.getContent())){
-                            System.out.println(myAgent.getLocalName() + ": Serviço de produção feito com sucesso para " + productName);
-                            //aliveProducts--;
+                            if(productName.length() <= 9){
+                                System.out.println(CYAN + myAgent.getLocalName() + ": Serviço de produção feito com sucesso para " + productName + RESET);
+                            }
+                            else{
+                                String splittedName[] = productName.split("_");
+                                String prod = splittedName[0];
+                                String n_try = splittedName[1];
+                                System.out.println(CYAN + myAgent.getLocalName() + ": Serviço de produção feito com sucesso para " + prod + " na tentativa " + n_try + RESET);
+                            }
                         }
                     }
                 }

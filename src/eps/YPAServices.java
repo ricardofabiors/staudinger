@@ -27,6 +27,9 @@ import jade.lang.acl.MessageTemplate;
 public final class YPAServices {
 
     private static final AID ypaAID = new AID(YPA.YPA_AGENT_NAME, false);
+    
+    public static final String YELLOW = "\u001B[33m";
+    public static final String RESET = "\u001B[0m";
 
     private YPAServices() {
     }
@@ -94,7 +97,7 @@ public final class YPAServices {
                     ContentElement ce = thisAgent.getContentManager().extractContent(msg);
                     sa = (Search) ((Action) ce).getAction();
                     result = sa.getMraInfoArr();
-                    System.out.println(msg.getSender().getLocalName() + ": Serviço de busca feito com sucesso para o agente " + thisAgent.getLocalName());   
+                    System.out.println(YELLOW + msg.getSender().getLocalName() + ": Serviço de busca feito com sucesso para o agente " + thisAgent.getLocalName() + RESET);   
                 }
             }
         } catch (Codec.CodecException | OntologyException ex) {

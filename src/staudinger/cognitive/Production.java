@@ -189,10 +189,17 @@ public class Production extends Product{
     protected void takeDown() {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setOntology(EPSOntology.EPSONTOLOGYNAME);
+        
+        String splittedName[] = getLocalName().split(" ");
+        String conversationID = splittedName[1];
+        msg.setConversationId(conversationID);
+        
+        String orderName = conversationID.substring(6, conversationID.length()-1);
+        
         msg.setSender(getAID());
-        msg.addReceiver(new AID("Gateway", AID.ISLOCALNAME));
+        msg.addReceiver(new AID(orderName, AID.ISLOCALNAME));
         msg.setContent("Production");
         send(msg);
-        System.out.println(getLocalName() + ": msg INFORM enviada para o Gateway");
+        System.out.println(getLocalName() + ": msg INFORM enviada para o meu NewOrder");
     }
 }

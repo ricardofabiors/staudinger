@@ -10,6 +10,10 @@ import eps.Product;
 import eps.SkillTemplate;
 import eps.Util;
 import eps.YPAException;
+import eps.ontology.EPSOntology;
+import jade.core.AID;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -94,12 +98,12 @@ public class NewOrder extends Product{
         
         //possível instanciação de um agente do tipo Insert
         SkillTemplate st2 = new SkillTemplate("instantiate", "boolean", new String[]{"string", "string", "string"});
-        st2.setArgsValues(new String[]{("Insert (from " + this.getLocalName() + ")"), "staudinger.cognitive.Insert", String.valueOf(requestedColor)});
+        st2.setArgsValues(new String[]{("Insert (from-" + this.getLocalName() + ")"), "staudinger.cognitive.Insert", String.valueOf(requestedColor)});
         PlanItem choice0 = myPlan.createNewPlanItem(st2);    //adiciona novo item no plano de execução        
         
         //possível instanciação de um agente do tipo Production
         SkillTemplate st3 = new SkillTemplate("instantiate", "boolean", new String[]{"string", "string", "string"});
-        st3.setArgsValues(new String[]{("Production (from " + this.getLocalName() + ")"), "staudinger.cognitive.Production", String.valueOf(requestedQuantity)});
+        st3.setArgsValues(new String[]{("Production (from-" + this.getLocalName() + ")"), "staudinger.cognitive.Production", String.valueOf(requestedQuantity)});
         PlanItem choice1 = myPlan.createNewPlanItem(st3);    //adiciona novo item no plano de execução        
         
         myPlan.addNewDecisionItem(decision, choice0, choice1);    //adiciona novo item de decisão no plano de execução
@@ -121,4 +125,44 @@ public class NewOrder extends Product{
         return myMrainfo;
     }
 
+    /**
+     * Sobrescreve o método "takeDown" de "Agent" especificando que o agente 
+     * "NewOrder" avisará ao "Gateway" o resultado da solicitação.
+     */
+    @Override
+    protected void takeDown() {
+        MessageTemplate mt = MessageTemplate.and(
+            MessageTemplate.or(
+                MessageTemplate.MatchPerformative(ACLMessage.INFORM),
+                MessageTemplate.MatchPerformative(ACLMessage.FAILURE)),
+            MessageTemplate.MatchConversationId("(from-" + getLocalName() + ")")
+        );
+        ACLMessage msg = blockingReceive(mt);
+        
+        //analisa a mensagem de feedback
+        if (msg == null) {
+            System.out.println(getLocalName() + ": Tentativa de produção falhou! Insert/Production demorou muito pra responder");   
+        } 
+        else {
+            ACLMessage msg2 = new ACLMessage(ACLMessage.INFORM);
+            msg2.setOntology(EPSOntology.EPSONTOLOGYNAME);
+            msg2.setSender(getAID());
+            msg2.addReceiver(new AID("Gateway", AID.ISLOCALNAME));
+            
+            if (msg.getPerformative() == ACLMessage.FAILURE) {
+                System.out.println(getLocalName() + ": Tentativa de produção falhou! Insert/Production falharam"); 
+            } 
+            else {
+                if("Insert".equals(msg.getContent())){
+                    msg2.setContent("Insert");
+                }
+                else if("Production".equals(msg.getContent())){
+                    msg2.setContent("Production");
+                }
+            }
+            send(msg2);
+            System.out.println(getLocalName() + ": msg INFORM enviada para o Gateway");
+        }
+        
+    }
 }
